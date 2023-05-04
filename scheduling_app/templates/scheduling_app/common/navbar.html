@@ -1,0 +1,57 @@
+{#  https://getbootstrap.com/docs/5.0/components/navbar/#}
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <div class="container-fluid">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'scheduling_app:about' %}">About</a>
+        </li>
+        {% if user.is_authenticated %}
+        <li class="nav-item">
+            {% if user.account_type == 'student' %}
+              <a class="nav-link" href="{% url 'scheduling_app:studentSchedules' %}">Your Schedules</a>
+            {% elif user.account_type == 'advisor' %}
+              <a class="nav-link" href="{% url 'scheduling_app:advisorSchedules' %}">Student Schedules</a>
+            {% endif %}
+        </li>
+        {% endif %}
+        {% if user.is_authenticated %}
+          {% if user.account_type == 'student' or user.account_type == 'advisor' %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'scheduling_app:courseTable' %}">Courses</a>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'scheduling_app:accountSelect' %}">Account Selection</a>
+            </li>
+          {% endif %}
+        {% endif %}
+      </ul>
+      <ul class="navbar-nav ms-auto">
+        {% if user.is_authenticated %}
+          <li class="nav-item">
+            <span class="nav-link">
+              User: {{ user.username }}
+              {% if user.account_type %}
+                ({{ user.account_type }})
+              {% else %}
+                (No Account-Type Selected)
+              {% endif %}
+            </span>
+          </li>
+        {% endif %}
+        <li class="nav-item">
+          {% if user.is_authenticated %}
+          <a class="nav-link" href="{% url 'scheduling_app:logout' %}">
+            <i class="bi bi-box-arrow-in-left">
+            </i> Logout
+          </a>
+          {% else %}
+          <a class="nav-link" href="{% url 'scheduling_app:login' %}">
+            <i class="bi bi-box-arrow-in-right">
+            </i> Login
+          </a>
+          {% endif %}
+        </li>
+      </ul>
+    </div>
+  </nav>

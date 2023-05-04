@@ -1,0 +1,53 @@
+{% extends 'scheduling_app/course-tables/course-table-template.html' %}
+{% load socialaccount %}
+
+{% block attributes %}
+  class="table table-light table-striped border border-secondary"
+  id="course-table"
+  data-search="true"
+  data-custom-search="customSearch"
+{% endblock %}
+
+{% block headers %}
+  {% if user.is_authenticated and user.account_type == 'student' %}
+    <th>Add to Schedule</th>
+  {% endif %}
+{% endblock %}
+
+{% block data_columns %}
+  {% if user.is_authenticated and user.account_type == 'student' %}
+    <td>
+      <form method="post">
+        {% csrf_token %}
+        <div class="btn-group dropstart">
+          <button class="btn btn-light btn-outline-secondary dropdown-toggle" type="button" id="{{ course.pk }}"
+                  data-bs-toggle="dropdown" aria-expanded="false">
+            Add to
+          </button>
+          <ul class="dropdown-menu text-center" aria-labelledby="{{ course.pk }}">
+              <input type="hidden" name="add_course_to_schedule_form" value="add_course_to_schedule_form">
+              <input type="hidden" name="add_course" value="{{ course.pk }}">
+            {% if schedules %}
+              {% for schedule in schedules %}
+                <li class="auto-resize">
+                  <button type="submit" name="add_schedule" value="{{ schedule.pk }}" class="dropdown-item btn-primary {% if schedule.status != 'Status.NOT_SUBMITTED' %}disabled{% endif %}">
+                    {{ schedule.name }}
+                  </button>
+                </li>
+              {% endfor %}
+            {% else %}
+              <li class="auto-resize">
+                <span class="dropdown-item disabled">No Schedules:</span>
+              </li>
+            {% endif %}
+            <li class="auto-resize">
+              <button type="button" class="dropdown-item btn btn-primary create-schedule" data-bs-toggle="modal" data-bs-target="#createSchedule">
+                <b>Create Schedule <i class="bi bi-plus-circle"> </i></b>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </form>
+    </td>
+  {% endif %}
+{% endblock %}

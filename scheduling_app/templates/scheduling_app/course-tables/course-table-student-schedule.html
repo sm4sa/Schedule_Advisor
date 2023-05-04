@@ -1,0 +1,23 @@
+{% extends 'scheduling_app/course-tables/course-table-template.html' %}
+{% load socialaccount %}
+
+{% block attributes %}
+  class="table table-course"
+{% endblock %}
+
+{% block headers %}
+{% endblock %}
+
+{% block data_columns %}
+  <td>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="delete_course_form" value="delete_course_form">
+      <input type="hidden" name="course_pk" value="{{ course.pk }}">
+      <input type="hidden" name="schedule_pk" value="{{ schedule.pk }}">
+      <button type="submit" id="edit" class="btn btn-danger collapse {% if not schedule.status == "Status.NOT_SUBMITTED" %}disabled{% endif %}">
+        <i class="bi bi-trash"></i>
+      </button>
+    </form>
+  </td>
+{% endblock %}

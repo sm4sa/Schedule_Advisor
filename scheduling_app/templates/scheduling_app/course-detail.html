@@ -1,0 +1,89 @@
+{% load static %}
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Course Detail</title>
+  <meta charset="utf-8">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'scheduling_app/CSS/website-base.css' %}">
+</head>
+
+<body>
+  {% include 'scheduling_app/common/navbar.html' %}
+  <main>
+    <div class="text-center container-fluid h-100">
+      <div class="row h-100">
+
+        <div class="col-1 sidenav"></div>
+
+        <div class="col-10 text-start mt-3">
+          <h1>{{ course.course_identifier.subject }} {{ course.course_identifier.catalog_number }} ({{ course.registration_information.class_number }}): {{ course.course_identifier.course_description }}</h1>
+          <h2>Instructor(s):</h2>
+            <p>
+              <ul>
+              {% for instructor in course.instructors.all %}
+                {% if instructor.name == '-' %}
+                  <li>(TBA)</li>
+                {% else %}
+                  <li>{{ instructor.name }} (<i>{{ instructor.email }}</i>)</li>
+                {% endif %}
+              {% endfor %}
+              </ul>
+            </p>
+          <h2>Registration Information:</h2>
+            <p>
+              Instruction Mode: {{ course.registration_information.instruction_mode_description }} <br>
+              Credits: {{ course.registration_information.units }} <br>
+              Component: {{ course.registration_information.component }} <br>
+            </p>
+          <h2>Enrollment Information:</h2>
+            <p>
+              Enrollment: {{ course.enrollment_information.enrollment_number }} / {{ course.enrollment_information.class_capacity }} <br>
+              Waitlist: {{ course.enrollment_information.waitlist_number }} / {{ course.enrollment_information.waitlist_capacity }}
+            </p>
+          <h2>Meeting Information:</h2>
+            <p>
+              {% for meeting in course.meeting.all %}
+                <h3>Meeting {{ forloop.counter }}:</h3>
+                {{ meeting.remaining_capacity }}
+
+                Dates: {{ meeting.start_date }} to {{ meeting.end_date }} <br>
+                Times:
+                  {% if meeting.start_time == midnight and meeting.end_time == midnight %}
+                    Online/TBA <br>
+                  {% else %}
+                    {{ meeting.start_time }} to {{ meeting.end_time }} <br>
+                  {% endif %}
+                Days:
+                  {% if meeting.days == '-' %}
+                    Online/TBA <br>
+                  {% else %}
+                    {{ meeting.days }} <br>
+                  {% endif %}
+                Room(s):
+                <uL>
+                  {% for location in meeting.location.all %}
+                    <li>
+                      {% if location.building_description == '-' %}
+                        Online/TBA
+                      {% else %}
+                        {{ location.building_description }}
+                      {% endif %}
+                    </li>
+                  {% endfor %}
+                </uL>
+              {% endfor %}
+            </p>
+        </div>
+        <div class="col-1 sidenav"></div>
+
+      </div>
+    </div>
+  </main>
+
+  {% include 'scheduling_app/common/footer.html' %}
+</body>
+</html>
